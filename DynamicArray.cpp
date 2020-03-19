@@ -1,6 +1,4 @@
 #include <iostream>
-#include <vector>
-
 using namespace std;
 
 template<typename T>
@@ -21,8 +19,51 @@ class DynamicArray {
             delete[] arr;
         }
 
+        class Iterator {
+            private:
+                const DynamicArray<T> *pArr;
+                int index;
+            public:
+                Iterator(const DynamicArray<T> *arr, int i) {
+                    pArr = arr;
+                    index = i;
+                }
+
+                const T &operator*() const{
+                    return pArr->operator[](index);
+                }
+
+                Iterator &operator++() {
+                    index++;
+                    return *this;
+                }
+
+                // overloading postfix operator (dummy parameter required)
+                Iterator &operator++(int k) {
+                    Iterator it(pArr, index);
+                    index++;
+                    return it;
+                }
+
+                bool operator!=(const Iterator &other) const {
+                    return index != other.index;
+                }
+
+                bool operator==(const Iterator &other) const {
+                    return index == other.index;
+                }
+        };
+
+        Iterator begin() const{
+            return Iterator(this, 0);
+        }
+
+        Iterator end() const{
+            return Iterator(this , count);
+        }
+
         // inserts at the back
-        void emplaceBack(const T data) {
+        void emplaceBack(const T &data) {
             // if array is full reallocating space
             if(count == _size) {
                 _size = _size * 2;
@@ -41,7 +82,7 @@ class DynamicArray {
         }
 
         // alternative to emplaceBack
-        void pushBack(const T data) {
+        void pushBack(const T &data) {
             emplaceBack(data);
         }
 
@@ -52,16 +93,32 @@ class DynamicArray {
                 count--;
         }
 
-        T operator[](int i) {
+        // returns the element at index i
+        T at(int i) const{
             return arr[i];
         }
 
-        int capacity() {
+        T &operator[](int i) const{
+            return arr[i];
+        }
+
+        int capacity() const{
             return _size;
         }
 
-        int size() {
+        int size() const{
             return count;
+        }
+
+        // reserves memory for array
+        void reserve(int &k) {
+            _size = k;
+            T* newArr = new T[_size];
+            for(int i = 0; i < count; i++) {
+                newArr[i] = arr[i];
+            }
+            delete[] arr;
+            arr = newArr;
         }
 
 };
@@ -87,5 +144,17 @@ int main() {
         cout << a[i] << " ";
     }
     cout << "capacity : " <<  a.capacity() << endl;
+    
+    // testing iterator
+    for (DynamicArray<int>::Iterator k = a.begin(); k != a.end(); ++k) {
+        cout << *k << " ";
+    }
+    cout << "capacity : " <<  a.capacity() << endl;
+
+    // testing range based loop
+    for(auto it: a) {
+        cout << it << " ";
+    }
+    
     return 0;
 }
