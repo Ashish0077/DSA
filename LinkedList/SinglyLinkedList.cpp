@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 using namespace std;
 
 template<typename T>
@@ -82,6 +83,8 @@ class SinglyList {
             if(_size == 0) {
                 head = newNode;
                 tail = head;
+                _size++;
+                return;
             }
             tail->next = newNode;
             tail = newNode;
@@ -97,6 +100,13 @@ class SinglyList {
         }
 
         void popBack() {
+            _size--;
+            if (_size <= 0) {
+                delete head;
+                head = NULL;
+                tail = NULL;
+                return;
+            }
             Node* it = head;
             while (it->next != tail) {
                 it = it->next;
@@ -105,14 +115,19 @@ class SinglyList {
             it->next = NULL;
             delete tail;
             tail = it;
-            _size--;
         }
 
         void popFront() {
+             _size--;
+            if (_size <= 0) {
+                delete head;
+                head = NULL;
+                tail = NULL;
+                return;
+            }
             Node* temp = head;
             head = head->next;
             delete temp;
-            _size--;
         }
 
         void insert(Iterator at,const T &data) {
@@ -139,20 +154,31 @@ class SinglyList {
         int size() const {
             return _size;
         }
+
+        void clear() {
+            while(head != NULL) {
+                Node* del = head;
+                head = head->next;
+                del->next = NULL;
+                delete del;
+            }
+            _size = 0;
+        }
  };
 
 int main() {
 
-    SinglyList<int> a;
+    SinglyList<string> a;
 
     cout << "Size : " << a.size() << endl;
 
-    a.emplaceBack(1);
-    a.emplaceBack(2);
-    a.emplaceBack(3);
+    a.emplaceBack("Mango");
+    a.emplaceBack("Apple");
+    a.emplaceBack("Guava");
+    a.clear();
     
     // 0 indexed
-    a.insert(a.begin() + 1, 22);
+    a.insert(a.begin() , "Banana");
 
     // Method 1: iterating Linked List
     auto it = a.begin();
@@ -164,8 +190,8 @@ int main() {
     
     cout << "Size : " << a.size() << endl;
 
-    a.emplaceBack(4);
-    a.emplaceBack(5);
+    a.emplaceBack("Pineapple");
+    a.emplaceBack("Cherry");
 
     // Method 2: Iterating Linked List
     for(auto i = a.begin(); i != a.end(); i++) {
@@ -173,7 +199,7 @@ int main() {
     }
     cout << "NULL\n";
 
-    a.emplaceFront(6);
+    a.emplaceFront("Orange");
     
     for(auto i = a.begin(); i != a.end(); i++) {
         cout << (*i)->data << " -> ";
