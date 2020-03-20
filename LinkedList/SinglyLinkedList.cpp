@@ -94,6 +94,12 @@ class SinglyList {
         void emplaceFront(const T &data) {
             Node* newNode = createNewNode();
             newNode->data = data;
+            if (_size == 0) {
+                head = newNode;
+                tail = head;
+                _size++;
+                return;
+            }
             newNode->next = head;
             head = newNode;
             _size++;
@@ -105,6 +111,7 @@ class SinglyList {
                 delete head;
                 head = NULL;
                 tail = NULL;
+                _size = 0;
                 return;
             }
             Node* it = head;
@@ -123,6 +130,7 @@ class SinglyList {
                 delete head;
                 head = NULL;
                 tail = NULL;
+                _size = 0;
                 return;
             }
             Node* temp = head;
@@ -162,6 +170,8 @@ class SinglyList {
                 del->next = NULL;
                 delete del;
             }
+            head = NULL;
+            tail = head;
             _size = 0;
         }
  };
@@ -176,7 +186,7 @@ int main() {
     a.emplaceBack("Apple");
     a.emplaceBack("Guava");
     a.clear();
-    
+
     // 0 indexed
     a.insert(a.begin() , "Banana");
 
@@ -192,7 +202,7 @@ int main() {
 
     a.emplaceBack("Pineapple");
     a.emplaceBack("Cherry");
-
+    
     // Method 2: Iterating Linked List
     for(auto i = a.begin(); i != a.end(); i++) {
         cout << (*i)->data << " -> ";
