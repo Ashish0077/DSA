@@ -327,7 +327,7 @@ class DoublyList {
 
         /*
             This function is used to delete elements
-            at from the back of the list
+            at from the front of the list
             Time Complexity : O(1)
         */
         void popFront() {
