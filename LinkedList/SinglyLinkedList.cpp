@@ -5,19 +5,27 @@ using namespace std;
 template<typename T>
 class SinglyList {
     private:
-        // node defination
+        /*
+            structure of node, containing a self referential pointer
+            to maintian the link to the next node
+        */
         struct Node {
             T data;
             Node* next;
         };
 
-        // internal head node
+        // starting node of the list
         Node* head;
-        // internal tail node (this is used to optimize the insertion operation)
+
+        // ending node of the list (this is used to optimize the insertion operation)
         Node* tail;
-        // this keeps track of number of nodes in the list
+
+        // this keeps track of the number of nodes in the list
         int _size;
 
+        /*
+            This function is used to create new empty nodes
+        */
         Node* createNewNode() {
             Node* node = new Node;
             node->next = NULL;
@@ -31,6 +39,10 @@ class SinglyList {
             _size = 0;
         }
 
+        /*
+            Iterator Class:
+            All functinality for iterating the list in forward direction
+        */
         class Iterator {
             private:
                 Node* it;
@@ -39,20 +51,35 @@ class SinglyList {
                     this->it = it;
                 }
 
+                /*
+                    Overloading * operator to make internal node accessible
+                */
                 Node* &operator*() {
                     return it;
                 }
 
+                /*
+                    Overloading prefix ++ operator
+                    this makes the iterator to move to next node
+                */
                 Iterator &operator++() {
                     it = it->next;
                     return *this;
                 }
-
+                
+                /*
+                    Overloading postfix ++ operator
+                    this makes the iterator to move to next node
+                */
                 Iterator &operator++(int k) {
                     it = it->next;
                     return *this;
                 }
 
+                /*
+                    Overloading + operator this helps to traverse 
+                    to nth node
+                */
                 Iterator &operator+(int k) {
                     for(int i = 0; i < k; i++) {
                         it = it->next;
@@ -60,23 +87,49 @@ class SinglyList {
                     return *this;
                 }
 
+                /*
+                    Overloading != operator
+                    this is used for comparision
+                    returns true when not equal else false
+                */
                 bool operator!=(const Iterator &other) const{
                     return it != other.it;
                 }
 
+                 /*
+                    Overlaading == operator
+                    this is used for comparision
+                    return true when equal else false
+                */
                 bool operator==(const Iterator &other) const{
                     return it == other.it;
                 }
         };
 
+        /*
+            This function is used to get a Iterator
+            from the begining of the list
+            begin() and end() helps in implementing for-each loop
+        */
         Iterator begin() {
             return Iterator(head);
         }
 
+        /*
+            This function is used to get a Iterator
+            from the ending of the list
+            begin() and end() helps in implementing for-each loop
+        */
         Iterator end() {
             return Iterator(NULL);
         }
 
+        /*
+            This function is used to insert elements
+            at the back/end of the list
+            Time Complexity : O(1) as the last node is tracked 
+            but tail pointer
+        */
         void emplaceBack(const T &data) {
             Node* newNode = createNewNode();
             newNode->data = data;
@@ -91,6 +144,11 @@ class SinglyList {
             _size++;
         }
 
+        /*
+            This function is used to insert elements
+            at the start/front of the list
+            Time Complexity : O(1)
+        */
         void emplaceFront(const T &data) {
             Node* newNode = createNewNode();
             newNode->data = data;
@@ -105,6 +163,12 @@ class SinglyList {
             _size++;
         }
 
+        /*
+            This function is used to delete elements
+            at from the back of the list
+            Time Complexity : O(n) it traveres to
+            previous node to the tail
+        */
         void popBack() {
             _size--;
             if (_size <= 0) {
@@ -124,6 +188,11 @@ class SinglyList {
             tail = it;
         }
 
+        /*
+            This function is used to delete elements
+            at from the front of the list
+            Time Complexity : O(1)
+        */
         void popFront() {
              _size--;
             if (_size <= 0) {
@@ -138,6 +207,13 @@ class SinglyList {
             delete temp;
         }
 
+        /*
+            This function is used to insert element at nth
+            position from the head
+            Time Complexity : O(n) it had to traverse to one previous
+            node to the location to insert (it is due to the nature of
+            od the list, it moves in forward direction only)
+        */
         void insert(Iterator at,const T &data) {
             
             if (begin() == at) {
@@ -159,10 +235,18 @@ class SinglyList {
             _size++;
         }
 
+        /*  
+            this just returns the size of the list
+            (no. of nodes)
+        */
         int size() const {
             return _size;
         }
 
+        /*
+            This function is used to delete the whole list
+            fromt the memory
+        */
         void clear() {
             while(head != NULL) {
                 Node* del = head;
