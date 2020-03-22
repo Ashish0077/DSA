@@ -60,6 +60,10 @@ class HashTable {
             return index;
         }
 
+        /*
+            This function is used initialize the private
+            variables (it have the common functionality of constructor)
+        */
         void init(int capacity, double maxLoadFactor) {
             if (capacity < 0) {
                 throw invalid_argument("Illegal Capacity");
@@ -88,6 +92,7 @@ class HashTable {
             }
             delete[] table;
             table = newTable;
+            // cout << "Resized new Capacity : " << capacity << endl;
         }
 
     public:
@@ -103,6 +108,10 @@ class HashTable {
             init(capacity, maxLoadFactor);
         }
 
+        /*
+            This function is used to insert the key value pair in
+            the map
+        */
         void emplace(K key, V value) {
             Entry newEntry(key, value);
             int bucketIndex = normalizeIndex(newEntry.hashCode);
@@ -120,11 +129,22 @@ class HashTable {
             }
         }
 
+        void remove(K key) {
+            int bucketIndex = normalizeIndex(HASHER(key));
+            list<Entry>* bucket = &table[bucketIndex];
+            for(auto it = bucket->begin(); it != bucket->end(); it++) {
+                if(it->key == key) {
+                    bucket->erase(it);
+                    break;
+                }
+            }
+        }
+
         V operator[](const K key) {
             int bucketIndex = normalizeIndex(HASHER(key));
-            list<Entry> bucket = table[bucketIndex];
-            if(!bucket.empty()) {
-                for(auto it = bucket.begin(); it != bucket.end(); it++) {
+            list<Entry>* bucket = &table[bucketIndex];
+            if(!bucket->empty()) {
+                for(auto it = bucket->begin(); it != bucket->end(); it++) {
                     if (it->key == key) {
                         return it->value;
                     }
@@ -136,13 +156,76 @@ class HashTable {
         V getValue(const K key) {
             return this->operator[](key);
         }
+
+        /*
+            This function is used to get all the keys
+            available in the table
+        */
+        list<K> getKeys() {
+            list<K>* newList = new list<K>;
+            for(int i = 0; i < capacity; i++) {
+                list<Entry>* bucket = &table[i];
+                for(auto it = bucket->begin(); it != bucket->end(); it++) {
+                    newList->push_back(it->key);
+                }
+            }
+            return *newList;
+        }
+
+        bool containsKey(K key) {
+            int bucketIndex = normalizeIndex(HASHER(key));
+            list<Entry>* bucket = &table[bucketIndex];
+            for(auto it = bucket->begin(); it != bucket->end(); it++) {
+                if (it->key == key) {
+                    return true;
+                }
+            }
+            return false; 
+        }
+
+        bool hasKey(K key) {
+            return containsKey(key);
+        }
 };
 
 int main() {
-    HashTable<string, int> b;
-    b.emplace("Mango", 1);
-    b.emplace("Apple", 2);
-    b.emplace("Grapes", 3);
-    b.emplace("Pineapple", 4);
+    HashTable<string, string> b;
+    b.emplace("Mango", "1kg");
+    b.emplace("Apple", "2kg");
+    b.emplace("Grapes", "3kg");
+    b.emplace("Pineapple", "4kg");
+    b.emplace("orange", "5kg");
+    b.emplace("banana", "6kg");
+    b.emplace("guava", "7kg");
+    b.emplace("melon", "8kg");
+    b.emplace("pine", "10kg");
+    b.emplace("peach", "11kg");
+    b.emplace("lichi", "13kg");
+    b.emplace("strawberry", "14kg");
+    b.emplace("berry", "16kg");
+    b.emplace("coconut", "17kg");
+
+    auto keys = b.getKeys();
+    for(auto it: keys) {
+        cout << it << " -> " << b[it] << endl;
+    }
+
+
+    // Counting frequency of elements in an array
+    int arr[] = {1, 2, 3, 4, 5, 3, 3, 3, 5, 6, 2, 1, 10};
+    int size = sizeof(arr)/sizeof(int);
+    HashTable<int, int> counter;
+    for(int i = 0; i < size; i++) {
+        if(counter.containsKey(arr[i])) {
+            counter.emplace(arr[i], counter[arr[i]] + 1);
+        } else {
+            counter.emplace(arr[i], 1);
+        }
+    }
+    auto kys = counter.getKeys();
+    for(auto it: kys) {
+        cout << it << " : " << counter[it] << endl;
+    }
+
     return 0;
 }
