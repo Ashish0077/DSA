@@ -55,6 +55,11 @@ class HashTable {
         // this is the main table
         list<Entry> *table;
 
+        /*  
+            This function is used to convert the hashcode
+            to index It removes the -ve sign and then mod it with capcity
+            Time Complexity: O(1)
+        */
         int normalizeIndex(int hashCode) {
             int index = (hashCode & 0x7FFFFFFF) % capacity; 
             return index;
@@ -77,7 +82,13 @@ class HashTable {
             table = new list<Entry>[this->capacity];
             _size = 0;
         }
-
+        
+        /*
+            This function is used for increasing the size of table
+            when required. It doubles the capacity. and then rehashes
+            the elements to the new table
+            Time Complexity: O(n) 
+        */
         void resizeTable() {
             int oldTableCapacity = capacity;
             capacity = capacity * 2;
@@ -129,6 +140,9 @@ class HashTable {
             }
         }
 
+        /*
+            This function is used to remove the key value pair
+        */
         void remove(K key) {
             int bucketIndex = normalizeIndex(HASHER(key));
             list<Entry>* bucket = &table[bucketIndex];
@@ -140,6 +154,10 @@ class HashTable {
             }
         }
 
+        /*
+            Overloading this operator gives functionality to
+            access by their key
+        */
         V operator[](const K key) {
             int bucketIndex = normalizeIndex(HASHER(key));
             list<Entry>* bucket = &table[bucketIndex];
@@ -152,7 +170,8 @@ class HashTable {
             }
             return *(new V);
         }
-
+        
+        // used to access the value associated with the key
         V getValue(const K key) {
             return this->operator[](key);
         }
@@ -172,6 +191,10 @@ class HashTable {
             return *newList;
         }
 
+        /*
+            This function is sued to check wheather the map is having
+            provided key or not
+        */
         bool containsKey(K key) {
             int bucketIndex = normalizeIndex(HASHER(key));
             list<Entry>* bucket = &table[bucketIndex];
@@ -182,7 +205,10 @@ class HashTable {
             }
             return false; 
         }
-
+        
+        /*
+            alternative to containsKey()
+        */
         bool hasKey(K key) {
             return containsKey(key);
         }
