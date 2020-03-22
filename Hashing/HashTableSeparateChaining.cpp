@@ -149,6 +149,7 @@ class HashTable {
             for(auto it = bucket->begin(); it != bucket->end(); it++) {
                 if(it->key == key) {
                     bucket->erase(it);
+                    _size--;
                     break;
                 }
             }
@@ -212,6 +213,21 @@ class HashTable {
         bool hasKey(K key) {
             return containsKey(key);
         }
+
+        /*
+            This function is used to print the 
+            internal buckets of the hashTable
+        */
+        // void printBuckets() {
+        //     for(int i = 0; i < capacity; i++) {
+        //         list<Entry>* bucket = &table[i];
+        //         cout << i << " : ";
+        //         for(auto it: *bucket) {
+        //             cout << "(" << it.key << " : " << it.value << ")" << " -> ";
+        //         }
+        //         cout << "NULL" << endl;
+        //     }
+        // }
 };
 
 int main() {
