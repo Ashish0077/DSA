@@ -53,6 +53,22 @@ class BinarySearchTree {
             }
         }
 
+        Node* search(Node* node, T data) {
+            if(node == nullptr) {
+                return nullptr;
+            }
+
+            if (node->data == data) {
+                return node;
+            } else if (node->data > data) {
+                node = search(node->left, data);
+            } else {
+                node = search(node->right, data);
+            }
+
+            return node;
+        }
+
         Node* root;
     public:
         BinarySearchTree() {
@@ -68,6 +84,10 @@ class BinarySearchTree {
 
         void insert(T data) {
             root = add(root, data);
+        }
+
+        Node* find(T data) {
+            return search(root, data);
         }
 
         bool empty() {
@@ -97,6 +117,13 @@ int main() {
     tree.insert(7);
 
     tree.printPostOrder();
-    
+
+    auto it = tree.find(7);
+    if(it == nullptr) {
+        cout << "Not Found" << endl;
+    } else {
+        cout << "found : " << it->data << endl;
+    }
+
     return 0;
 }
