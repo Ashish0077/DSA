@@ -67,6 +67,44 @@ class BinarySearchTree {
             }
 
             return node;
+        } 
+
+        Node* getMinNode(Node* node) {
+            Node* current = node;
+            while(current->left != nullptr) {
+                current = current->left;
+            }
+
+            return current;
+        }
+
+        Node* del(Node* node, T data) {
+            if (node == nullptr) {
+                return node;
+            }
+
+            if (data < node->data) {
+                node->left = del(node->left, data);
+            } else if (data > node->data) {
+                node->right = del(node->right, data);
+            } else {
+                if (node->left = nullptr) {
+                    Node* temp = node->right;
+                    free(node);
+                    return temp;
+                } else if (node->right == nullptr) {
+                    Node* temp = node->left;
+                    free(node);
+                    return temp;
+                }
+
+                Node* temp = getMinNode(node->right);
+
+                node->data = temp->data;
+                node->right = del(node->right, temp->data);
+            }
+
+            return node;
         }
 
         Node* root;
@@ -84,6 +122,10 @@ class BinarySearchTree {
 
         void insert(T data) {
             root = add(root, data);
+        }
+
+        void remove(T data) {
+            root = del(root, data);
         }
 
         Node* find(T data) {
@@ -124,6 +166,9 @@ int main() {
     } else {
         cout << "found : " << it->data << endl;
     }
+    cout << endl;
+    tree.remove(7);
+    tree.printPostOrder();
 
     return 0;
 }
