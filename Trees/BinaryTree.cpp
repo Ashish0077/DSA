@@ -1,5 +1,6 @@
 #include <iostream>
 #include <stack>
+#include <queue>
 
 using namespace std;
 
@@ -153,6 +154,20 @@ class BinaryTree {
             }
         }
 
+        static void levelOrderTraversal(Node* root) {
+            if(root == nullptr)
+                return;
+            
+            queue<Node*> nodes;
+            nodes.push(root);
+            while(!nodes.empty()) {
+                if (nodes.front()->getLeft() != nullptr) nodes.push(nodes.front()->getLeft()); 
+                if (nodes.front()->getRight() != nullptr) nodes.push(nodes.front()->getRight()); 
+                cout << nodes.front()->getData() << " ";
+                nodes.pop();
+            }
+        }
+
 };
 
 int main () {
@@ -199,6 +214,8 @@ int main () {
     // Breadth First Search
     cout << "\n\nLevelOrder Recursive\n";
     BinaryTree<int>::levelOrderTraversalRecursive(root);
+    cout << "\nLevelOrder Iterative\n";
+    BinaryTree<int>::levelOrderTraversal(root);
     cout << "\n";
     
     return 0;
