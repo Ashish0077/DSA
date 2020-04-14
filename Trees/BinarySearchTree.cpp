@@ -124,16 +124,52 @@ class BinarySearchTree {
             root->right = nullptr;
         }
 
-        void insert(T data) {
+        void insertRecursive(T data) {
             root = add(root, data);
         }
 
-        void remove(T data) {
+        void insert(T data) {
+            Node* newNode = new Node;
+            newNode->data = data;
+            newNode->left = nullptr;
+            newNode->right = nullptr;
+
+            if(empty()) {
+                root = newNode;
+                return;
+            }
+
+            Node* current = root;
+            Node* temp = nullptr;
+            while(current != nullptr) {
+                temp = current;
+                if(data <= current->data)
+                    current = current->left;
+                else if (data > current->data)
+                    current = current->right;
+            }
+
+            if(data <= temp->data) {
+                temp->left = newNode;
+            } else {
+                temp->right = newNode;
+            }
+        }
+
+        void removeRecursive(T data) {
             root = del(root, data);
         }
 
-        Node* find(T data) {
+        void remove(T data) {
+
+        }
+
+        Node* findRecursive(T data) {
             return search(root, data);
+        }
+
+        Node* find(T data) {
+
         }
         
         bool empty() {
@@ -218,11 +254,11 @@ int main() {
 
     BinarySearchTree<int> tree;
     tree.insert(50);
-    tree.insert(30);
+    tree.insertRecursive(30);
     tree.insert(20);
-    tree.insert(40);
+    tree.insertRecursive(40);
     tree.insert(70);
-    tree.insert(60);
+    tree.insertRecursive(60);
     tree.insert(80);
 
     //cout << "Height Of the Tree : " << tree.height() << endl;
