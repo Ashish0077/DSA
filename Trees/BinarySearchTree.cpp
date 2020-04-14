@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stack>
 using namespace std;
 
 template<typename T>
@@ -10,6 +11,7 @@ class BinarySearchTree {
             Node* right;
         };
 
+        // Recursive Node Insert function
         Node* add(Node* node, T data) {
             if(node == nullptr) {
                 Node* n = new Node;
@@ -29,30 +31,31 @@ class BinarySearchTree {
             return node;
         }
 
-        void inOrderTraversal(Node* node) {
+        void inOrderTraversalRecursive(Node* node) {
             if (node != nullptr) {
-                inOrderTraversal(node->left);
+                inOrderTraversalRecursive(node->left);
                 cout << node->data << " ";
-                inOrderTraversal(node->right);
+                inOrderTraversalRecursive(node->right);
             }
         }
 
-        void preOrderTraversal(Node* node) {
+        void preOrderTraversalRecursive(Node* node) {
             if (node != nullptr) {
                 cout << node->data << " ";
-                preOrderTraversal(node->left);
-                preOrderTraversal(node->right);
+                preOrderTraversalRecursive(node->left);
+                preOrderTraversalRecursive(node->right);
             }
         }
 
-        void postOrderTraversal(Node* node) {
+        void postOrderTraversalRecursive(Node* node) {
             if (node != nullptr) {
-                postOrderTraversal(node->left);
-                postOrderTraversal(node->right);
+                postOrderTraversalRecursive(node->left);
+                postOrderTraversalRecursive(node->right);
                 cout << node->data << " ";
             }
         }
 
+        // Recursive Search function
         Node* search(Node* node, T data) {
             if(node == nullptr) {
                 return nullptr;
@@ -78,6 +81,7 @@ class BinarySearchTree {
             return current;
         }
 
+        // recursive delete function
         Node* del(Node* node, T data) {
             if (node == nullptr) {
                 return node;
@@ -131,44 +135,110 @@ class BinarySearchTree {
         Node* find(T data) {
             return search(root, data);
         }
-
+        
         bool empty() {
             return root == nullptr;
         }
 
-        void printInOrder() {
-            inOrderTraversal(root);
+        void printInOrderRecursive() {
+            inOrderTraversalRecursive(root);
         }
-        void printPreOrder() {
-            preOrderTraversal(root);
+
+        void printInOrderIterative() {
+            stack<Node*> nodes;
+            Node* current = root;
+            while(current != nullptr || !nodes.empty()) {
+
+                while(current != nullptr) {
+                    nodes.push(current);
+                    current = current->left;
+                }
+
+                // currently root is null
+                current = nodes.top();
+                nodes.pop();
+                cout << current->data << " ";
+                current = current->right;
+            }
         }
-        void printPostOrder() {
-            postOrderTraversal(root);
+
+        void printPreOrderRecursive() {
+            preOrderTraversalRecursive(root);
+        }
+
+        void printPreOrderIterative() {
+            stack<Node*> nodes;
+            Node* current = root;
+            nodes.push(current);
+            while(!nodes.empty()) {
+                current = nodes.top();
+                nodes.pop();
+                cout << current->data << " ";
+                if(current->right != nullptr) nodes.push(current->right);
+                if(current->left != nullptr) nodes.push(current->left);
+            }
+        }
+
+        void printPostOrderRecursive() {
+            postOrderTraversalRecursive(root);
+        }
+
+        void printPostOrderIterative() {
+            stack<Node*> nodes;
+            Node* current = root;
+            while(current != nullptr || !nodes.empty()) {
+
+                while(current != nullptr) {
+                    if(current->right != nullptr) nodes.push(current->right);
+                    nodes.push(current);
+                    current = current->left;
+                }
+
+                current = nodes.top();
+                nodes.pop();
+
+                if(nodes.empty()) {
+                    cout << current->data << " ";
+                    break;
+                }
+
+                if(current->right != nullptr && nodes.top() == current->right) {
+                    nodes.pop();
+                    nodes.push(current);
+                    current = current->right;
+                } else {
+                    cout << current->data << " ";
+                    current = nullptr;
+                }
+            }
         }
 };
 
 int main() {
 
     BinarySearchTree<int> tree;
-    tree.insert(4);
-    tree.insert(2);
-    tree.insert(3);
-    tree.insert(1);
-    tree.insert(6);
-    tree.insert(5);
-    tree.insert(7);
+    tree.insert(50);
+    tree.insert(30);
+    tree.insert(20);
+    tree.insert(40);
+    tree.insert(70);
+    tree.insert(60);
+    tree.insert(80);
 
-    tree.printPostOrder();
+    //cout << "Height Of the Tree : " << tree.height() << endl;
 
-    auto it = tree.find(7);
-    if(it == nullptr) {
-        cout << "Not Found" << endl;
-    } else {
-        cout << "found : " << it->data << endl;
-    }
-    cout << endl;
-    tree.remove(7);
-    tree.printPostOrder();
+    cout << "\nPostOrder Traversal Recursive\n"; 
+    tree.printPostOrderRecursive();
+    cout << "\nPostOrder Traversal Iterative\n";
+    tree.printPostOrderIterative();
+    cout << "\n\nPreOrder Traversal Recursive\n"; 
+    tree.printPreOrderRecursive();
+    cout << "\nPreOrder Traversal Iterative\n";
+    tree.printPreOrderIterative();
+    cout << "\n\nInOrder Traversal Recursive\n"; 
+    tree.printInOrderRecursive();
+    cout << "\nInOrder Traversal Iterative\n";
+    tree.printInOrderIterative();
 
     return 0;
 }
