@@ -37,27 +37,50 @@ class BinaryTree {
                 }
         };
 
-        static void preOrderTraversal(Node* root) {
+        static void preOrderTraversalRecursive(Node* root) {
             if(root != nullptr) {
                 cout << root->getData() << " ";
-                preOrderTraversal(root->getLeft());
-                preOrderTraversal(root->getRight());
+                preOrderTraversalRecursive(root->getLeft());
+                preOrderTraversalRecursive(root->getRight());
             }
         }
 
-        static void inOrderTraversal(Node* root) {
+        static void inOrderTraversalRecursive(Node* root) {
             if(root != nullptr) {
-                inOrderTraversal(root->getLeft());
+                inOrderTraversalRecursive(root->getLeft());
                 cout << root->getData() << " ";
-                inOrderTraversal(root->getRight());
+                inOrderTraversalRecursive(root->getRight());
             }
         }
 
-        static void postOrderTraversal(Node* root) {
+        static void postOrderTraversalRecursive(Node* root) {
             if(root != nullptr) {
-                postOrderTraversal(root->getLeft());
-                postOrderTraversal(root->getRight());
+                postOrderTraversalRecursive(root->getLeft());
+                postOrderTraversalRecursive(root->getRight());
                 cout << root->getData() << " ";
+            }
+        }
+
+        static int getHeight(Node* root) {
+            if(root == nullptr)
+                return -1;
+            return max(getHeight(root->getLeft()), getHeight(root->getRight())) + 1;
+        }
+
+        static void levelOrderTraversalRecursive(Node* root) {
+            int h = getHeight(root);
+            for(int i = 0; i <= h; i++)
+                printLevel(root, i);
+        }
+
+        static void printLevel(Node* root, int level) {
+            if(root == nullptr)
+                return;
+            if(level == 0)
+                cout << root->getData() << " ";
+            else if (level > 0) {
+                printLevel(root->getLeft(), level - 1);
+                printLevel(root->getRight(), level - 1);
             }
         }
 
@@ -81,12 +104,20 @@ int main () {
     root->getRight()->getRight()->setLeft(14);
     root->getRight()->getRight()->setRight(15);
 
-    BinaryTree<int>::inOrderTraversal(root);
-    cout << endl;
-    BinaryTree<int>::postOrderTraversal(root);
-    cout << endl;
-    BinaryTree<int>::preOrderTraversal(root);
-    cout << endl;
+    cout << "Height of the Tree : " << BinaryTree<int>::getHeight(root) << endl;
 
+    // Depth First Search
+    cout << "InOrder Recursive\n";
+    BinaryTree<int>::inOrderTraversalRecursive(root);
+    cout << "\nPostOrder Recursive\n";
+    BinaryTree<int>::postOrderTraversalRecursive(root);
+    cout << "\nPreOrder Recursive\n";
+    BinaryTree<int>::preOrderTraversalRecursive(root);
+
+    // Breadth First Search
+    cout << "\nLevelOrder Recursive\n";
+    BinaryTree<int>::levelOrderTraversalRecursive(root);
+    cout << "\n";
+    
     return 0;
 }
