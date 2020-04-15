@@ -128,6 +128,13 @@ class BinarySearchTree {
             root = add(root, data);
         }
 
+        int height(Node* current) {
+            if (current == nullptr)
+                return -1;
+            
+            return max(height(current->left), height(current->right)) + 1;
+        }
+
         void insert(T data) {
             Node* newNode = new Node;
             newNode->data = data;
@@ -240,6 +247,10 @@ class BinarySearchTree {
             return root == nullptr;
         }
 
+        int height() {
+            return height(root);
+        }
+
         void printInOrderRecursive() {
             inOrderTraversalRecursive(root);
         }
@@ -326,8 +337,8 @@ int main() {
     tree.insert(80);
     tree.insertRecursive(75);
     tree.insert(35);
-    //cout << "Height Of the Tree : " << tree.height() << endl;
-
+    cout << "Height Of the Tree : " << tree.height() << endl;
+    
     cout << "\nPostOrder Traversal Recursive\n"; 
     tree.printPostOrderRecursive();
     cout << "\nPostOrder Traversal Iterative\n";
