@@ -92,7 +92,7 @@ class BinarySearchTree {
             } else if (data > node->data) {
                 node->right = del(node->right, data);
             } else {
-                if (node->left = nullptr) {
+                if (node->left == nullptr) {
                     Node* temp = node->right;
                     free(node);
                     return temp;
@@ -161,7 +161,60 @@ class BinarySearchTree {
         }
 
         void remove(T data) {
+            Node* current = root;
 
+            Node* p;
+            while(current != nullptr) {
+                if(data < current->data) {
+                    p = current;
+                    current = current->left;
+                } else if (data > current->data) {
+                    p = current;
+                    current = current->right;
+                } else {
+                    if(current->left == nullptr && current->right == nullptr) {
+                        if(current != root) {
+                            if(p->left == current) {
+                                p->left = nullptr;
+                            } else if (p->right == current) {
+                                p->right = nullptr;
+                            }
+                        } else {
+                            root = nullptr;
+                        }
+                        delete current;
+                    } else if (current->left != nullptr && current->right != nullptr) {
+                        // find parent of inorder successor
+                        Node* minP = nullptr;
+                        Node* temp = current->right;
+                        while(temp->left != nullptr) {
+                            minP = temp;
+                            temp = temp->left;
+                        }
+                        Node* min = (minP == nullptr) ? current->left : minP->left;
+
+                        current->data = min->data;                        
+                        if(minP == nullptr) {
+                            current->left = nullptr;
+                        } else {
+                            minP->left = nullptr;
+                        }
+                        
+                        delete min;
+                    } else {
+                        Node* child = current->left ? current->left : current->right;
+                        if(current != root) {
+                            if(p->left == current)
+                                p->left = child;
+                            else 
+                                p->right = child;
+                        } else {
+                            root = child;
+                        }
+                        delete current;
+                    }
+                }
+            }
         }
 
         Node* findRecursive(T data) {
@@ -169,7 +222,18 @@ class BinarySearchTree {
         }
 
         Node* find(T data) {
+            Node* current = root;
+            
+            while(current != nullptr) {
+                if(data < current->data)
+                    current = current->left;
+                else if (data > current->data)
+                    current = current->right;
+                else
+                    return current;
+            }
 
+            return nullptr;
         }
         
         bool empty() {
@@ -260,7 +324,8 @@ int main() {
     tree.insert(70);
     tree.insertRecursive(60);
     tree.insert(80);
-
+    tree.insertRecursive(75);
+    tree.insert(35);
     //cout << "Height Of the Tree : " << tree.height() << endl;
 
     cout << "\nPostOrder Traversal Recursive\n"; 
@@ -276,5 +341,27 @@ int main() {
     cout << "\nInOrder Traversal Iterative\n";
     tree.printInOrderIterative();
 
+    cout << "\n\nSearching for 70 iteratively\n";
+    auto it = tree.find(70);
+    if(it)
+        cout << "Found\n";
+    else 
+        cout << "Not Found\n";
+    cout << "Searching for 90 Recursively\n";
+    auto it2 = tree.findRecursive(90);
+    if(it2)
+        cout << "Found\n";
+    else 
+        cout << "Not Found\n";
+    
+    cout << "\nDeleting 75 Iteratively\n";
+    tree.remove(75);
+    tree.printInOrderIterative();
+    cout << endl;
+
+    cout << "\nDeleting 70 Recursively\n";
+    tree.remove(70);
+    tree.printInOrderIterative();
+    cout << endl;
     return 0;
 }
