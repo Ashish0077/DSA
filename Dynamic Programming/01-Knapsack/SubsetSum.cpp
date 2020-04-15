@@ -55,7 +55,7 @@ bool subsetSumBottomUpDP(int arr[], int sum, int size) {
     
     for(int i = 1; i < size + 1; i++) {
         for(int j = 1; j < sum + 1; j++) {
-            if(arr[i - 1] <= sum)
+            if(arr[i - 1] <= j)
                 DP[i][j] = DP[i - 1][j - arr[i - 1]] || DP[i - 1][j];
             else 
                 DP[i][j] = DP[i - 1][j];
